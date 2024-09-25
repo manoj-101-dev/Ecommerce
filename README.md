@@ -1,8 +1,24 @@
-# React + Vite
+# Shopsy
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This application showcases product details for various gadgets. It features "Add to Cart" and "Remove from Cart" buttons, which update the cart quantity accordingly.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Displays a list of products with images, names, and prices.
+- Allows users to add or remove items from the shopping cart.
+- Navigation menu for easy access to different sections of the application.
+
+## Technologies Used
+
+- React
+- Vite
+- HTML/CSS
+- Node Js
+- Experss Js
+
+## Running the Application
+
+To start the development server, use the following command:
+
+
+npm run dev
