@@ -3,11 +3,13 @@ import { Form } from "react-bootstrap";
 
 const CategoryFilter = ({ categories, selectedCategory, onChange }) => {
   return (
-    <Form.Group>
+    <Form.Group className="w-auto">
+      {" "}
       <Form.Select
         value={selectedCategory}
         onChange={(e) => onChange(e.target.value)}
-        className="shadow-sm"
+        className="shadow-sm form-select-sm"
+        style={{ maxWidth: "200px", marginRight: "100px" }}
       >
         <option value="">All Categories</option>
         {categories.map((cat) => (

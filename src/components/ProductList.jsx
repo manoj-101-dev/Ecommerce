@@ -1,10 +1,13 @@
+/* eslint-disable no-unused-vars */
 import { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import { Container, Row, Col, Button, Spinner, Alert } from "react-bootstrap";
 import ProductCard from "./ProductCard";
 import ProductModal from "./ProductModal";
+import BookingForm from "./BookingForm";
 import { fetchProducts } from "../api";
 import SearchBar from "./SearchBar";
 import CategoryFilter from "./CategoryFilter";
+import { Link } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -12,11 +15,22 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
+  const [showBookingForm, setShowBookingForm] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState(null);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   useEffect(() => {
     const loadProducts = async () => {
-      const data = await fetchProducts();
-      setProducts(data);
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load products. Please try again later."); // Handle error
+        setLoading(false); // Ensure loading is also false
+      }
     };
 
     loadProducts();
@@ -34,6 +48,27 @@ const ProductList = () => {
 
   const categories = [...new Set(products.map((product) => product.category))];
 
+  const handleCartChange = (product) => {
+    setCartItems((prevItems) => {
+      const isInCart = prevItems.find((item) => item._id === product._id);
+      if (isInCart) {
+        return prevItems.filter((item) => item._id !== product._id);
+      } else {
+        return [...prevItems, product];
+      }
+    });
+  };
+
+  const handleShopNow = (product) => {
+    setCurrentProduct(product);
+    setShowBookingForm(true);
+  };
+
+  const handleBookingSuccess = () => {
+    setShowBookingForm(false);
+    window.location.href = "/";
+  };
+
   return (
     <Container
       fluid
@@ -45,28 +80,67 @@ const ProductList = () => {
           <Col md={6}>
             <SearchBar query={searchQuery} onChange={setSearchQuery} />
           </Col>
-          <Col md={4}>
+          <Col md={6} className="d-flex justify-content-end align-items-center">
             <CategoryFilter
               categories={categories}
               selectedCategory={selectedCategory}
               onChange={setSelectedCategory}
+              className="me-3"
             />
+            <Link
+              to="/my-bookings"
+              className="btn btn-warning me-2"
+              style={{ minWidth: "120px" }}
+            >
+              My Bookings
+            </Link>
+            <Button variant="info" style={{ minWidth: "120px" }}>
+              Cart ({cartItems.length})
+            </Button>
           </Col>
         </Row>
-        <Row>
-          {filteredProducts.map((product) => (
-            <Col xs={12} sm={6} md={4} lg={3} key={product._id}>
-              <ProductCard
-                product={product}
-                onClick={(product) => setSelectedProduct(product)}
-              />
-            </Col>
-          ))}
-        </Row>
+
+        {loading ? ( // Show loading spinner while fetching
+          <div className="text-center py-5">
+            <Spinner animation="border" />
+            <p>Loading products...</p>
+          </div>
+        ) : error ? (
+          <Alert variant="danger">{error}</Alert>
+        ) : (
+          <Row>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <Col xs={12} sm={6} md={4} lg={3} key={product._id}>
+                  <ProductCard
+                    product={product}
+                    onClick={(product) => setSelectedProduct(product)}
+                    onCartChange={handleCartChange}
+                    isInCart={cartItems.some(
+                      (item) => item._id === product._id
+                    )}
+                    onShopNow={handleShopNow}
+                  />
+                </Col>
+              ))
+            ) : (
+              <Col className="text-center">
+                <p>No products found matching your criteria.</p>
+              </Col>
+            )}
+          </Row>
+        )}
       </Container>
+
       <ProductModal
         product={selectedProduct}
         onClose={() => setSelectedProduct(null)}
+      />
+      <BookingForm
+        product={currentProduct}
+        onClose={() => setShowBookingForm(false)}
+        onSuccess={handleBookingSuccess}
+        show={showBookingForm}
       />
     </Container>
   );
