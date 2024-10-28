@@ -29,13 +29,16 @@ const BookingForm = ({ product, onClose, show }) => {
 
     console.log("Items for checkout session:", items);
 
-    fetch("http://localhost:5000/api/create-checkout-session", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ items }),
-    })
+    fetch(
+      "https://ecommerce-backend-cg72.onrender.com/api/create-checkout-session",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ items }),
+      }
+    )
       .then((res) => {
         if (res.ok) return res.json();
         return res.json().then((json) => Promise.reject(json));
