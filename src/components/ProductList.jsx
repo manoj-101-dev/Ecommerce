@@ -7,7 +7,7 @@ import BookingForm from "./BookingForm";
 import { fetchProducts } from "../api";
 import SearchBar from "./SearchBar";
 import CategoryFilter from "./CategoryFilter";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
@@ -15,11 +15,15 @@ const ProductList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    // Load cart items from localStorage on initial state
+    return JSON.parse(localStorage.getItem("cartItems")) || [];
+  });
   const [showBookingForm, setShowBookingForm] = useState(false);
   const [currentProduct, setCurrentProduct] = useState(null);
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -28,8 +32,8 @@ const ProductList = () => {
         setProducts(data);
         setLoading(false);
       } catch (err) {
-        setError("Failed to load products. Please try again later."); // Handle error
-        setLoading(false); // Ensure loading is also false
+        setError("Failed to load products. Please try again later.");
+        setLoading(false);
       }
     };
 
@@ -51,11 +55,17 @@ const ProductList = () => {
   const handleCartChange = (product) => {
     setCartItems((prevItems) => {
       const isInCart = prevItems.find((item) => item._id === product._id);
+      let updatedItems;
+
       if (isInCart) {
-        return prevItems.filter((item) => item._id !== product._id);
+        updatedItems = prevItems.filter((item) => item._id !== product._id);
       } else {
-        return [...prevItems, product];
+        updatedItems = [...prevItems, product];
       }
+
+      // Update localStorage
+      localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+      return updatedItems;
     });
   };
 
@@ -67,6 +77,10 @@ const ProductList = () => {
   const handleBookingSuccess = () => {
     setShowBookingForm(false);
     window.location.href = "/";
+  };
+
+  const handleNavigateToCart = () => {
+    navigate("/cart", { state: { cartItems } });
   };
 
   return (
@@ -94,13 +108,17 @@ const ProductList = () => {
             >
               My Bookings
             </Link>
-            <Button variant="info" style={{ minWidth: "120px" }}>
+            <Button
+              variant="info"
+              style={{ minWidth: "120px" }}
+              onClick={handleNavigateToCart}
+            >
               Cart ({cartItems.length})
             </Button>
           </Col>
         </Row>
 
-        {loading ? ( // Show loading spinner while fetching
+        {loading ? (
           <div className="text-center py-5">
             <Spinner animation="border" />
             <p>Loading products...</p>

@@ -1,23 +1,16 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import { useState } from "react";
 import { Modal, Form, Button, Alert } from "react-bootstrap";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 const BookingForm = ({ product, onClose, show }) => {
-  const navigate = useNavigate(); // Initialize useNavigate
   const [quantity, setQuantity] = useState(1);
   const [address, setAddress] = useState("");
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    if (!product) {
-      console.error("Product is not available.");
-      return;
-    }
-
-    // Create booking data
+  const handleBooking = () => {
+    console.log("Product:", product);
     const bookingData = {
       productId: product._id,
       productName: product.name,
@@ -31,10 +24,29 @@ const BookingForm = ({ product, onClose, show }) => {
     bookings.push(bookingData);
     localStorage.setItem("bookings", JSON.stringify(bookings));
 
-    setSuccess(true);
+    // Prepare the items for checkout
+    const items = [{ id: product._id, quantity }];
 
-    // Navigate to the My Bookings page after a successful booking
-    navigate("/my-bookings");
+    console.log("Items for checkout session:", items);
+
+    fetch("http://localhost:5000/api/create-checkout-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ items }),
+    })
+      .then((res) => {
+        if (res.ok) return res.json();
+        return res.json().then((json) => Promise.reject(json));
+      })
+      .then(({ url }) => {
+        window.location = url; // Redirect to Stripe checkout
+      })
+      .catch((e) => {
+        console.error(e.error);
+        setError("Failed to create checkout session. Please try again.");
+      });
   };
 
   return (
@@ -50,36 +62,41 @@ const BookingForm = ({ product, onClose, show }) => {
             Booking confirmed! Redirecting to My Bookings...
           </Alert>
         )}
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId="formQuantity" className="mb-3">
-            <Form.Label>Quantity</Form.Label>
-            <Form.Control
-              type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              min={1}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="formAddress" className="mb-4">
-            <Form.Label>Delivery Address</Form.Label>
-            <Form.Control
-              type="text"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-              placeholder="Enter your delivery address"
-            />
-          </Form.Group>
-          <div className="d-flex justify-content-between">
-            <Button variant="primary" type="submit" disabled={!product}>
-              Confirm Booking
+        {error && (
+          <Alert variant="danger" className="mb-3">
+            {error}
+          </Alert>
+        )}
+        {!success && (
+          <Form onSubmit={(e) => e.preventDefault()}>
+            <Form.Group controlId="formQuantity" className="mb-3">
+              <Form.Label>Quantity</Form.Label>
+              <Form.Control
+                type="number"
+                value={quantity}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+                min={1}
+                required
+              />
+            </Form.Group>
+            <Form.Group controlId="formAddress" className="mb-4">
+              <Form.Label>Delivery Address</Form.Label>
+              <Form.Control
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+                placeholder="Enter your delivery address"
+              />
+            </Form.Group>
+            <Button variant="primary" onClick={handleBooking}>
+              Book
             </Button>
-            <Button variant="secondary" onClick={onClose}>
+            <Button variant="secondary" onClick={onClose} className="ms-2">
               Cancel
             </Button>
-          </div>
-        </Form>
+          </Form>
+        )}
       </Modal.Body>
     </Modal>
   );

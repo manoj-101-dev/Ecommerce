@@ -1,9 +1,8 @@
-// App.jsx
-
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import EntrancePage from "./components/EntrancePage";
 import ProductList from "./components/ProductList";
 import MyBookings from "./components/MyBookings";
+import CartPage from "./components/CartPage";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 const App = () => {
@@ -18,6 +17,7 @@ const App = () => {
         <Route path="/" element={<EntrancePage />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/my-bookings" element={<MyBookings />} />
+        <Route path="/cart" element={<CartPage />} />
       </Routes>
     </Router>
   );
