@@ -10,7 +10,6 @@ const BookingForm = ({ product, onClose, show }) => {
   const [error, setError] = useState(null);
 
   const handleBooking = () => {
-    console.log("Product:", product);
     const bookingData = {
       productId: product._id,
       productName: product.name,
@@ -26,8 +25,6 @@ const BookingForm = ({ product, onClose, show }) => {
 
     // Prepare the items for checkout
     const items = [{ id: product._id, quantity }];
-
-    console.log("Items for checkout session:", items);
 
     fetch(
       "https://ecommerce-backend-cg72.onrender.com/api/create-checkout-session",
