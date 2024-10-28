@@ -3,10 +3,7 @@ import EntrancePage from "./components/EntrancePage";
 import ProductList from "./components/ProductList";
 import MyBookings from "./components/MyBookings";
 import CartPage from "./components/CartPage";
-import Success from "./components/Success";
-
 import "bootstrap/dist/css/bootstrap.min.css";
-import Cancel from "./components/cancel";
 
 const App = () => {
   return (
@@ -21,8 +18,6 @@ const App = () => {
         <Route path="/products" element={<ProductList />} />
         <Route path="/my-bookings" element={<MyBookings />} />
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/cancel" element={<Cancel />} />
       </Routes>
     </Router>
   );
