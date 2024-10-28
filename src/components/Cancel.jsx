@@ -1,26 +1,23 @@
 import { useNavigate } from "react-router-dom";
+import { Container, Button, Alert } from "react-bootstrap";
 
 const Cancel = () => {
   const navigate = useNavigate();
 
-  const handleRetry = () => {
+  const handleGoBack = () => {
     navigate("/products");
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Payment Canceled</h1>
-      <p>
-        It seems like you canceled the payment process. You can try again or
-        continue shopping.
-      </p>
-      <button
-        onClick={handleRetry}
-        style={{ padding: "10px 20px", marginTop: "20px" }}
-      >
-        Back to Products
-      </button>
-    </div>
+    <Container className="text-center" style={{ marginTop: "50px" }}>
+      <Alert variant="danger">
+        <Alert.Heading>Payment Canceled</Alert.Heading>
+        <p>Your transaction was not completed. Please try again.</p>
+      </Alert>
+      <Button onClick={handleGoBack} variant="primary" size="lg">
+        Return to Products
+      </Button>
+    </Container>
   );
 };
 

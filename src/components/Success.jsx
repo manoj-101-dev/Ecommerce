@@ -1,23 +1,23 @@
 import { useNavigate } from "react-router-dom";
+import { Container, Button, Alert } from "react-bootstrap";
 
 const Success = () => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate("/products"); // Adjust path to your products page
+    navigate("/products");
   };
 
   return (
-    <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h1>Payment Successful!</h1>
-      <p>Thank you for your purchase. Your order is being processed.</p>
-      <button
-        onClick={handleGoBack}
-        style={{ padding: "10px 20px", marginTop: "20px" }}
-      >
+    <Container className="text-center" style={{ marginTop: "50px" }}>
+      <Alert variant="success">
+        <Alert.Heading>Payment Successful!</Alert.Heading>
+        <p>Thank you for your purchase. Your order is being processed.</p>
+      </Alert>
+      <Button onClick={handleGoBack} variant="primary" size="lg">
         Continue Shopping
-      </button>
-    </div>
+      </Button>
+    </Container>
   );
 };
 
