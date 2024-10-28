@@ -1,12 +1,16 @@
-# Shopsy
 
-This application showcases product details for various gadgets. It features "Add to Cart" and "Remove from Cart" buttons, which update the cart quantity accordingly.
+
+# Shopping Cart
+
+Welcome to **Shopping Cart**! This is a React-based shopping application that allows users to browse products, add them to their cart, and book items with delivery details. The app also includes features like search and filter by category, view bookings, and manage the shopping cart.
 
 ## Features
 
-- Displays a list of products with images, names, and prices.
-- Allows users to add or remove items from the shopping cart.
-- Navigation menu for easy access to different sections of the application.
+- **Product Browsing**: Users can browse through a list of products, filter them by category, and search by name.
+- **Add to Cart**: Users can add or remove items from their cart.
+- **Shop Now**: Users can instantly book a product by providing quantity and delivery address.
+- **View Bookings**: Users can view their past bookings and cancel if necessary.
+- **Responsive Design**: The app is fully responsive, ensuring a smooth experience across all devices.
 
 ## Technologies Used
 
