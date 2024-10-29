@@ -1,8 +1,8 @@
 
 
-# Shopping Cart
+# ShopSmart
 
-Welcome to **Shopping Cart**! This is a React-based shopping application that allows users to browse products, add them to their cart, and book items with delivery details. The app also includes features like search and filter by category, view bookings, and manage the shopping cart.
+**ShopSmart** is a modern eCommerce web application designed to provide users with a seamless online shopping experience. Built using React for the frontend and Node.js with Express for the backend, the application features a user-friendly interface where customers can browse a variety of products, add them to their cart, and make secure payments through an integrated payment gateway.
 
 ## Features
 
